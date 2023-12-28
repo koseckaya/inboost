@@ -1,5 +1,5 @@
 ## Deploy
-(inboost-test)[https://inboost-test.netlify.app/]
+https://inboost-test.netlify.app/
 
 ## Scripts
 
