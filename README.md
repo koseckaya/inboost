@@ -1,3 +1,6 @@
+## Deploy
+(inboost-test)[https://inboost-test.netlify.app/]
+
 ## Scripts
 
 - `dev`/`start` - start dev server and open browser
