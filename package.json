@@ -17,8 +17,10 @@
     "@reduxjs/toolkit": "^1.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-multi-select-component": "^4.3.4",
     "react-redux": "^8.0.1",
-    "reactflow": "^11.10.1"
+    "reactflow": "^11.10.1",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^9.2.0",
@@ -27,6 +29,7 @@
     "@testing-library/user-event": "^14.2.5",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
+    "@types/redux-persist": "^4.3.1",
     "@types/testing-library__jest-dom": "^5.14.5",
     "@vitejs/plugin-react": "^4.0.0",
     "eslint": "^8.0.0",

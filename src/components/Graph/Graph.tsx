@@ -1,19 +1,52 @@
-import React from "react"
-import ReactFlow from "reactflow"
+import ReactFlow, {
+  Background,
+  Connection,
+  EdgeChange,
+  NodeChange,
+} from "reactflow"
+
+import { Node } from "../Node"
+
 import "reactflow/dist/style.css"
+import "./Graph.css"
+import { selectEdges, selectNodes } from "../../store/slices/nodesSlice"
+import {
+  onNodesChange,
+  onEdgesChange,
+  onConnect,
+} from "../../store/slices/nodesSlice"
+import { useAppDispatch, useAppSelector } from "../../store/hooks"
 
-const initialNodes = [
-  { id: "1", position: { x: 0, y: 0 }, data: { label: "1" } },
-  { id: "2", position: { x: 0, y: 100 }, data: { label: "2" } },
-]
-
-const initialEdges = [{ id: "e1-2", source: "1", target: "2" }]
+const nodeTypes = {
+  custom: Node,
+}
 
 const Graph = () => {
+  const nodes = useAppSelector(selectNodes)
+  const edges = useAppSelector(selectEdges)
+  const dispatch = useAppDispatch()
+  const onNodesChangeDispatch = (changes: NodeChange[]) =>
+    dispatch(onNodesChange(changes))
+
+  const onEdgesChangeDispatch = (changes: EdgeChange[]) =>
+    dispatch(onEdgesChange(changes))
+
+  const onConnectDispatch = (changes: Connection) =>
+    dispatch(onConnect(changes))
+
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
-      <ReactFlow nodes={initialNodes} edges={initialEdges} />
-    </div>
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChangeDispatch}
+      onEdgesChange={onEdgesChangeDispatch}
+      onConnect={onConnectDispatch}
+      fitView
+      attributionPosition="top-right"
+      nodeTypes={nodeTypes}
+    >
+      <Background color="#333" gap={24} />
+    </ReactFlow>
   )
 }
 

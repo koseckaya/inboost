@@ -1,14 +1,10 @@
-import { Counter } from "./features/counter/Counter"
-import "./App.css"
 import Graph from "./components/Graph/Graph"
+import "./App.css"
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        {/* <Counter /> */}
-        <Graph />
-      </header>
+    <div style={{ width: "100vw", height: "100vh" }}>
+      <Graph />
     </div>
   )
 }
