@@ -4,18 +4,18 @@ import ReactFlow, {
   EdgeChange,
   NodeChange,
 } from "reactflow"
-
 import { Node } from "../Node"
-
-import "reactflow/dist/style.css"
-import "./Graph.css"
-import { selectEdges, selectNodes } from "../../store/slices/nodesSlice"
 import {
   onNodesChange,
   onEdgesChange,
   onConnect,
+  selectEdges,
+  selectNodes,
 } from "../../store/slices/nodesSlice"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
+
+import "reactflow/dist/style.css"
+import "./Graph.css"
 
 const nodeTypes = {
   custom: Node,

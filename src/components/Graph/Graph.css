@@ -78,7 +78,14 @@
     background: #FFF;
     height: 40px;
   }
-  
-  .custom-node__select option{
+   .custom-node__select select:focus{
+    outline: none;
+  }
+  .custom-node__select select option{
+    padding: 8px 0;
+    height: 20px;
+  }
+ 
+  .custom-node__select input{
     padding: 8px 0;
   }

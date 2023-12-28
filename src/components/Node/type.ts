@@ -1,11 +1,11 @@
-export type Option = {
+export type OptionItem = {
   value: string
   label: string
 }
-type Data = {
+export type NodeData = {
   prefix: string
   selected: string
-  items: Option[]
+  items: OptionItem[]
 }
 
 type Position = {
@@ -20,7 +20,7 @@ export type NodeObject = {
   id: string
   type: string
   position: Position
-  data: Data
+  data: NodeData
   sourcePosition: string
   targetPosition: string
   positionAbsolute: AbsolutePosition
@@ -32,6 +32,6 @@ export type EdgesType = {
   type: string
 }
 export type NodeProps = {
-  id: number
-  data: Data
+  id: string
+  data: NodeData
 }

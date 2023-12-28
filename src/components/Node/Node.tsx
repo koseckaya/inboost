@@ -1,78 +1,67 @@
-import { memo } from "react"
-import { Handle, useReactFlow, useStoreApi, Position, NodeTypes } from "reactflow"
+import { ReactNode } from "react"
 import {
-  getChildNode,
+  Handle,
+  useReactFlow,
+  useStoreApi,
+  Position,
+  Node as ReactFlowNode,
+} from "reactflow"
+import Select, { SingleValue } from "react-select"
+import {
   getNewGeneratedNode,
-  getUpdatedNode,
   hasChildNode,
+  updateChildNode,
 } from "../../helpers/nodeHelper"
-import { EdgesType, NodeObject, Option } from "./type"
+import { NodeProps, OptionItem } from "./type"
 
-function Node({ id: nodeId, data }) {
-  console.log('nodeId', nodeId, data);
+const Node = ({ id: nodeId, data }: NodeProps): ReactNode => {
   const { setNodes, setEdges } = useReactFlow()
   const store = useStoreApi()
+  const selectedValue = data.items.find((item) => item.value === data.selected)
 
-  const updateChildNode = (
-    parentNode: NodeObject,
-    allNodes: NodeObject[],
-    allEdges: EdgesType[],
-  ) => {
-    if (hasChildNode(parentNode, allEdges)) {
-      const childNode = getChildNode(parentNode, allNodes, allEdges)
-
-      const updatedChildNode = getUpdatedNode(childNode, parentNode)
-
-      const updatedNodes = allNodes.map((node) => {
-        if (node.id === updatedChildNode.id) {
-          return updatedChildNode
-        }
-        return node
-      })
-
-      return updateChildNode(updatedChildNode, updatedNodes, allEdges)
-    }
-
-    return allNodes
-  }
-
-  const onChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
+  const onChange = (option: SingleValue<OptionItem>) => {
     const { nodeInternals, edges } = store.getState()
 
-    let targetNode = null
+    if (!option) {
+      return
+    }
 
+    let targetNode: ReactFlowNode | null = null
     const allNodes = Array.from(nodeInternals.values())
-    const updatedNodes = allNodes.map((node) => {
-      if (node.id === nodeId) {
-        node.data = {
-          ...node.data,
-          selected: evt.target.value,
+    const updatedNodes: ReactFlowNode[] = allNodes.map(
+      (node: ReactFlowNode) => {
+        if (String(node.id) === String(nodeId)) {
+          node.data = {
+            ...node.data,
+            selected: option.value,
+          }
+
+          targetNode = node
         }
 
-        console.log("node", node)
-        targetNode = node
+        return node
+      },
+    )
+
+    if (targetNode) {
+      if (hasChildNode(targetNode, edges)) {
+        const listForUpdate = updateChildNode(targetNode, updatedNodes, edges)
+        setNodes(listForUpdate)
+      } else {
+        const { id } = targetNode
+        const newNode = getNewGeneratedNode(targetNode)
+        updatedNodes.push(newNode)
+
+        setNodes(updatedNodes)
+        setEdges((eds) =>
+          eds.concat({
+            id: `${id}-${newNode.id}`,
+            source: id,
+            target: newNode.id,
+            type: "step",
+          }),
+        )
       }
-
-      return node
-    })
-
-    if (hasChildNode(targetNode, edges)) {
-      const listForUpdate = updateChildNode(targetNode, updatedNodes, edges)
-
-      setNodes(listForUpdate)
-    } else {
-      const newNode = getNewGeneratedNode(targetNode)
-      updatedNodes.push(newNode)
-
-      setNodes(updatedNodes)
-      setEdges((eds) =>
-        eds.concat({
-          id: `${targetNode.id}-${newNode.id}`,
-          source: targetNode.id,
-          target: newNode.id,
-          type: "step",
-        }),
-      )
     }
   }
 
@@ -81,17 +70,16 @@ function Node({ id: nodeId, data }) {
       <div className="custom-node__label"></div>
       <div className="custom-node__select">
         <Handle type="target" position={Position.Left} />
-        <select className="nodrag" onChange={onChange} value={data.selected}>
-          {data.items.map((option: Option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-        <Handle type="source" position={Position.Right} id={data.handleId} />
+        <Select
+          className="nodrag"
+          options={data.items}
+          value={selectedValue}
+          onChange={onChange}
+        />
+        <Handle type="source" position={Position.Right} />
       </div>
     </div>
   )
 }
 
-export default memo(Node)
+export default Node
